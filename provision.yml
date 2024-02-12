@@ -3,7 +3,7 @@
   hosts: localhost
   vars_files:
       - group_vars/jitsi/vars
-#      - group_vars/jitsi/secret_vars
+      - group_vars/jitsi/secret_vars
   
   vars:
     jitsi_count: 1
@@ -28,7 +28,7 @@
 #      state: present
 #    with_sequence: count='{{ jitsi_count }}'
 
-  - name: Get info about jitsi meet instances
+  - name: get info about jitsi meet instances
     linode.cloud.instance_info:
       api_token: '{{ api_token }}'
       label: '{{ jitsi_prefix }}{{ item }}-{{ uuid }}'
@@ -51,7 +51,7 @@
       state: present
     with_sequence: count='{{ jvb_count }}'
 
-  - name: Get info about jitsi JVB instances
+  - name: get info about jitsi JVB instances
     linode.cloud.instance_info:
       api_token: '{{ api_token }}'
       label: '{{ jvb_prefix }}{{ item }}'
