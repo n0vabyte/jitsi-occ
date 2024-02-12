@@ -18,7 +18,7 @@ function cleanup {
 readonly ROOT_PASS=$(sudo cat /etc/shadow | grep root)
 readonly LINODE_PARAMS=($(curl -sH "Authorization: Bearer ${TOKEN_PASSWORD}" "https://api.linode.com/v4/linode/instances/${LINODE_ID}" | jq -r .type,.region,.image))
 readonly TAGS=$(curl -sH "Authorization: Bearer ${TOKEN_PASSWORD}" "https://api.linode.com/v4/linode/instances/${LINODE_ID}" | jq -r .tags)
-readonly VARS_PATH="./group_vars/nomad/vars"
+readonly VARS_PATH="./group_vars/jitsi/vars"
 
 # utility functions
 function destroy {
@@ -30,7 +30,7 @@ function destroy {
 }
 
 function secrets {
-  local SECRET_VARS_PATH="./group_vars/nomad/secret_vars"
+  local SECRET_VARS_PATH="./group_vars/jitsi/secret_vars"
   local VAULT_PASS=$(openssl rand -base64 32)
   local TEMP_ROOT_PASS=$(openssl rand -base64 32)
   echo "${VAULT_PASS}" > ./.vault-pass
