@@ -39,7 +39,7 @@
   - name: creating jitsi JVB instances
     linode.cloud.instance:
       label: '{{ jvb_prefix }}{{ item }}-{{ uuid }}'
-      api_token: '{{ token }}'
+      api_token: '{{ api_token }}'
       type: '{{ jvb_type }}'
       region: '{{ region }}'
       image: '{{ image }}'
@@ -53,7 +53,7 @@
 
   - name: Get info about jitsi JVB instances
     linode.cloud.instance_info:
-      api_token: '{{ token }}'
+      api_token: '{{ api_token }}'
       label: '{{ jvb_prefix }}{{ item }}'
     register: jvb_info
     with_sequence: count='{{ jvb_count }}'
