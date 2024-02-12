@@ -30,7 +30,7 @@
 
   - name: Get info about jitsi meet instances
     linode.cloud.instance_info:
-      api_token: '{{ token }}'
+      api_token: '{{ api_token }}'
       label: '{{ jitsi_prefix }}{{ item }}-{{ uuid }}'
     register: jitsi_info
     with_sequence: count='{{ jitsi_count }}'

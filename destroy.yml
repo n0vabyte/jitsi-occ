@@ -5,8 +5,8 @@
   hosts: localhost
   connection: local
   vars_files:
-      - group_vars/nomad/vars
-      - group_vars/nomad/secret_vars
+      - group_vars/jitsi/vars
+      - group_vars/jitsi/secret_vars
   
   vars:
     jitsi_count: 1
