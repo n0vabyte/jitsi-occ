@@ -1,0 +1,21 @@
+---
+# destroy linodes
+
+- name: destroying linodes
+  hosts: localhost
+  connection: local
+  vars_files:
+      - group_vars/nomad/vars
+      - group_vars/nomad/secret_vars
+  
+  vars:
+    jitsi_count: 1
+    jvb_count: '{{ cluster_size - jitsi_count }}'    
+
+  tasks:
+  - name: deleting linodes except provisioner
+    linode.cloud.instance:
+      label: '{{ jvb_prefix }}{{ item }}-{{ uuid }}'
+      api_token: '{{ api_token }}'
+      state: absent
+    with_sequence: count='{{ jvb_count }}'
