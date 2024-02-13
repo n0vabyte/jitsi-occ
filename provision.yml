@@ -95,8 +95,7 @@
       block: |
         #jinja2: trim_blocks:False
         [jitsi_servers]
-        {{ jitsi_ip1 }}
-        #localhost ansible_connection=local user=root
+        localhost ansible_connection=local user=root
         [jvb_servers]
         {%- for count in range(jvb_count | int) %}
         {{ jvb_info.results[count].instance.ipv4[0] }}
