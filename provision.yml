@@ -1,32 +1,15 @@
-# create Jitsi Instnaces
+# create jitsi instnaces
 - name: create Jitsi instances
   hosts: localhost
   vars_files:
-      - group_vars/jitsi/vars
-      - group_vars/jitsi/secret_vars
+    - group_vars/jitsi/vars
+    - group_vars/jitsi/secret_vars
   
   vars:
     jitsi_count: 1
     jvb_count: '{{ cluster_size - jitsi_count }}'
 
   tasks:
-
-# removing. we are now provisioner  
-# MEET
-#  - name: creating jitsi meet instances
-#    linode.cloud.instance:
-#      label: '{{ jitsi_prefix }}{{ item }}-{{ uuid }}'
-#      api_token: '{{ token }}'
-#      type: '{{ jitsi_type }}'
-#      region: '{{ region }}'
-#      image: '{{ image }}'
-#      root_pass: '{{ root_pass }}'
-#      authorized_keys: '{{ ssh_keys }}'
-#      private_ip: true
-#      group: '{{ group }}'
-#      tags: '{{ linode_tags }}'       
-#      state: present
-#    with_sequence: count='{{ jitsi_count }}'
 
   - name: get info about jitsi meet instances
     linode.cloud.instance_info:
@@ -46,7 +29,6 @@
       root_pass: '{{ root_pass }}'
       authorized_keys: '{{ ssh_keys }}'
       private_ip: true
-      group: '{{ group }}'
       tags: '{{ linode_tags }}'       
       state: present
     with_sequence: count='{{ jvb_count }}'
@@ -54,7 +36,7 @@
   - name: get info about jitsi JVB instances
     linode.cloud.instance_info:
       api_token: '{{ api_token }}'
-      label: '{{ jvb_prefix }}{{ item }}'
+      label: '{{ jvb_prefix }}{{ item }}-{{ uuid }}'
     register: jvb_info
     with_sequence: count='{{ jvb_count }}'
 
@@ -66,26 +48,8 @@
       # private ips
       jitsi_priv1: '{{ jitsi_info.results.0.instance.ipv4[1] }}'
 
-# YOU ARE HERE. DO YOU WANT TO DO DYNAMIC FACTS? THESE ARE NOT USED ANYWHERE EXCEPT WAITING FOR 
-# PORT 22 TO BECOME OPEN. THAT TASK IS A DUPLICATE.
-
-  - name: set facts for jitsi bridges
-    set_fact:
-      # JVB
-      jvb01_ip1: '{{ jvb_info.results.0.instance.ipv4[0] }}'
-      jvb01_priv1: '{{ jvb_info.results.0.instance.ipv4[1] }}'
-      jvb02_ip1: '{{ jvb_info.results.1.instance.ipv4[0] }}'
-      jvb02_priv1: '{{ jvb_info.results.1.instance.ipv4[1] }}'
-
-#  - name: test connectivity
-#    ping:
-#    with_items:
-#      - '{{ jitsi_ip1 }}'
-#      - '{{ jvb01_ip1 }}'
-#      - '{{ jvb02_ip1 }}'
-
 # updated
-  - name: update group_vars dbeug
+  - name: update group_vars
     blockinfile:
       path: ./group_vars/jitsi/vars
       marker: "# {mark} INSTANCE VARS"
@@ -100,8 +64,8 @@
                   jitsi_ip1: {{ jitsi_ip1 }}
                   ip_priv1: {{ jitsi_priv1 }}
             jvb:
-            {%- for count in range(jvb_count) %}
-              - jvb-{{ count +1 }}:
+            {%- for count in range(jvb_count | int) %}
+              - jvb-{{ count + 1 }}:
                 instance:
                   hostname: jvb{{ count + 1 }}
                   jitsi_ip1: {{ jvb_info.results[count].instance.ipv4[0] }}
@@ -134,23 +98,10 @@
         {{ jitsi_ip1 }}
         #localhost ansible_connection=local user=root
         [jvb_servers]
-        {%- for count in range(jvb_count) %}
+        {%- for count in range(jvb_count | int) %}
         {{ jvb_info.results[count].instance.ipv4[0] }}
         {%- endfor %}
         
-  - name: wait for port 22 to become open
-    wait_for:
-      port: 22
-      host: '{{ item }}'
-      search_regex: OpenSSH
-      delay: 10
-    connection: local
-    with_items:
-      - '{{ jitsi_ip1 }}'
-      - '{{ jvb01_ip1 }}'
-      - '{{ jvb02_ip1 }}'
-
-# jvb only
   - name: wait for port 22 to become open
     wait_for:
       port: 22
@@ -158,4 +109,6 @@
       search_regex: OpenSSH
       delay: 10
     connection: local
-    loop: "{{ jvb_info.results }}"
+    with_items: 
+      - "{{ jvb_info.results }}"
+      - "{{ jitsi_info.results }}"

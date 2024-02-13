@@ -76,11 +76,11 @@ function ansible:build {
   jitsi_type: ${LINODE_PARAMS[0]}
   jvb_prefix: jvb
   jvb_type: ${LINODE_PARAMS[0]}
-  region: us-lax
-  image: linode/ubuntu22.04
+  region: ${LINODE_PARAMS[1]}
+  image: ${LINODE_PARAMS[2]}
   linode_tags: ${TAGS}
   uuid: ${UUID}
-  soa_email_address: ${soa_email_address}
+  soa_email_address: ${SOA_EMAIL_ADDRESS}
   cluster_size: ${CLUSTER_SIZE}
 EOF
 }
