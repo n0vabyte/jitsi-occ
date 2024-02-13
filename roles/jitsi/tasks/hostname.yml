@@ -3,7 +3,6 @@
 
 - name: setting cluster size facts
   set_fact:
-    jitsi_count: 1
     jvb_count: '{{ cluster_size - jitsi_count }}'
 
 - name: configure hostnames on jitsi servers
@@ -33,10 +32,10 @@
     block: |
       #jinja2: trim_blocks:False
       # Jitsi
-      {%- for count in range(jitsi_count) %}
+      {%- for count in range(jitsi_count | int) %}
       {{ jitsi_data.results.jitsi[count].instance.ip_priv1 }} {{ jitsi_data.results.jitsi[count].instance.hostname }}
       {%- endfor %}
       # JVB
-      {%- for count in range(jvb_count) %}
+      {%- for count in range(jvb_count | int) %}
       {{ jitsi_data.results.jvb[count].instance.ip_priv1 }} {{ jitsi_data.results.jvb[count].instance.hostname }}
       {%- endfor %}

@@ -7,6 +7,7 @@
     nginx_conf: "/etc/nginx/sites-enabled/{{ domain }}.conf"
     jvb_conf: '/etc/jitsi/videobridge/jvb.conf'
     jicofo_conf: '/etc/jitsi/jicofo/jicofo.conf'
+    jvb_count: '{{ cluster_size - jitsi_count }}'
   run_once: true
   delegate_to: localhost
 
@@ -100,7 +101,7 @@
     replace: |
       #jinja2: trim_blocks:False
       # BEGIN UPSTREAM
-      {%- for count in range(jvb_cluster_size) %}
+      {%- for count in range(jvb_count | int) %}
       upstream jvb{{ count + 1 }} {
         zone upstreams 64K;
         server {{ jitsi_data.results.jvb[count].instance.ip_priv1 }}:9090;
@@ -119,7 +120,7 @@
     marker: '# {mark} UPSTREAM'
     block: |
       #jinja2: trim_blocks:False
-      {%- for count in range(jvb_cluster_size) %}
+      {%- for count in range(jvb_count | int) %}
       upstream jvb{{ count + 1 }} {
         zone upstreams 64K;
         server {{ jitsi_data.results.jvb[count].instance.ip_priv1 }}:9090;
@@ -146,7 +147,7 @@
     replace: |
       #jinja2: trim_blocks:False
           # BEGIN COLIBRI-WS
-      {%- for count in range(jvb_cluster_size) %}
+      {%- for count in range(jvb_count | int) %}
           location ~ ^/colibri-ws/jvb{{ count + 1 }}/(.*) {
             proxy_pass http://jvb{{ count + 1 }}/colibri-ws/jvb{{ count + 1 }}/$1$is_args$args;
             proxy_http_version 1.1;
@@ -167,7 +168,7 @@
     marker: '    # {mark} COLIBRI-WS'
     block: |
       #jinja2: trim_blocks:False
-      {%- for count in range(jvb_cluster_size) %}
+      {%- for count in range(jvb_count | int) %}
           location ~ ^/colibri-ws/jvb{{ count + 1 }}/(.*) {
             proxy_pass http://jvb{{ count + 1 }}/colibri-ws/jvb{{ count + 1 }}/$1$is_args$args;
             proxy_http_version 1.1;
@@ -200,42 +201,22 @@
   loop: "{{ groups['jvb_servers'] }}"
   register: jvbrelay
 
-- name: enabling videobridge relay (1/2)
-  replace:
-    path: "{{ jvb_conf }}"
-    regexp: '(websockets \{[^}]*\})'
-    replace: | 
-      \1 
-      # BEGIN JVB-RELAY
-          relay {
-              enabled = true
-              region = "{{ region }}"
-              relay-id = "jvb{{ count + 1 }}"
-          }
-      # END JVB-RELAY
-  run_once: true
-  delegate_to: "{{ item }}"
-  loop: "{{ groups['jvb_servers'] }}"
-  loop_control:
-    index_var: count
-  when: "'# BEGIN JVB-RELAY' not in colibriws.results[0].content | b64decode"
-
-- name: enabling videobridge relay (2/2)
+- name: enabling videobridge relay
   blockinfile:
     path: "{{ jvb_conf }}"
     marker: '# {mark} JVB-RELAY'
-    block: |
-          relay {
-              enabled = true
-              region = "{{ region }}"
-              relay-id = "jvb{{ count + 1 }}"
-          }
+    insertafter: "videobridge {"
+    block: |4
+            relay {
+                enabled = true
+                region = "{{ region }}"
+                relay-id = "jvb{{ count + 1 }}"
+            }
   run_once: true
   delegate_to: "{{ item }}"
   loop: "{{ groups['jvb_servers'] }}"
   loop_control:
     index_var: count
-  when: "'# BEGIN JVB-RELAY' in colibriws.results[0].content | b64decode"
 
 # jicofo update
 
@@ -256,38 +237,18 @@
   loop: "{{ groups['jitsi_servers'] }}"
   register: octo
 
-- name: enable octo in Jicofo (1/2)
-  replace:
+- name: enable octo in jicofo
+  blockinfile:
     path: "{{ jicofo_conf }}"
-    #path: /tmp/jicofo.conf
-    regexp: '(bridge: \{[^}]*\})'
-    replace: | 
-      \1 
-        # BEGIN OCTO-RELAY
+    marker: '  # {mark} OCTO-RELAY'
+    insertafter: "jicofo {"
+    block: |2
         octo: {
           enabled = true
         }
-        # END OCTO-RELAY
   run_once: true
   delegate_to: "{{ item }}"
   loop: "{{ groups['jitsi_servers'] }}"
-  when: "'# BEGIN OCTO-RELAY' not in octo.results[0].content | b64decode"
-
-- name: enable octo in Jicofo (2/2)
-  blockinfile:
-    path: "{{ jicofo_conf }}"
-    #path: /tmp/jicofo.conf
-    #marker: '  # {mark} OCTO-RELAY'
-    marker: '  # {mark} OCTO-RELAY'
-    insertafter: EOF
-    block: |
-        octo: {
-          enabled = true
-          }
-  run_once: true
-  delegate_to: "{{ item }}"
-  loop: "{{ groups['jitsi_servers'] }}"
-  when: "'# BEGIN OCTO-RELAY' in octo.results[0].content | b64decode"
 
 # restart services
 

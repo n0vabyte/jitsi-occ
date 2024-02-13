@@ -6,7 +6,7 @@
     - group_vars/jitsi/secret_vars
   
   vars:
-    jitsi_count: 1
+    #jitsi_count: 1
     jvb_count: '{{ cluster_size - jitsi_count }}'
 
   tasks:

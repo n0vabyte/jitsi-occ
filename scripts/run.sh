@@ -82,6 +82,7 @@ function ansible:build {
   uuid: ${UUID}
   soa_email_address: ${SOA_EMAIL_ADDRESS}
   cluster_size: ${CLUSTER_SIZE}
+  jitsi_count: 1
 EOF
 }
 
