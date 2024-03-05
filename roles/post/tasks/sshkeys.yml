@@ -1,6 +1,20 @@
 ---
 # roles/post/tasks/sshkeys.yml
 
+- name: get root password
+  slurp:
+    src: "/etc/shadow"
+  run_once: true
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['jitsi_servers'] }}"
+  register: shadow
+
+- name: set root password
+  set_fact:
+    root_password: "{{ shadow.results[0].content | b64decode | regex_search('^root.+') }}"
+  run_once: true
+  delegate_to: "localhost"
+
 # set account passwords
 - name: set root password on remote nodes
   lineinfile:
