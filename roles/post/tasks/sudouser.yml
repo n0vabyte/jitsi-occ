@@ -1,8 +1,8 @@
 ---
-- name: generating sudo user password
-  set_fact:
-    password: "{{ lookup('password', '/dev/null length=25 chars=ascii_letters,digits') }}"
-  no_log: true
+#- name: generating sudo user password
+#  set_fact:
+#    password: "{{ lookup('password', '/dev/null length=25 chars=ascii_letters,digits') }}"
+#  no_log: true
 
 #- name: writing sudo user password to vars
 #  lineinfile:
@@ -10,6 +10,8 @@
 #    path: group_vars/linode/vars
 #    line: | 
 #      password: {{ password }}
+
+# sudo user and pass in run script
 
 - name: set sudo user
   user:
