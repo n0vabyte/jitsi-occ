@@ -1,8 +1,10 @@
 ---
-#- name: generating sudo user password
-#  set_fact:
-#    password: "{{ lookup('password', '/dev/null length=25 chars=ascii_letters,digits') }}"
-#  no_log: true
+- name: generating sudo user password
+  set_fact:
+    sudo_password: "{{ password }}"
+  no_log: true
+  run_once: true
+  delegate_to: "localhost"
 
 #- name: writing sudo user password to vars
 #  lineinfile:
@@ -18,7 +20,7 @@
         name: "{{ username }}"
         shell: /bin/bash
         groups: sudo
-        password: "{{ password | password_hash('sha512') }}"
+        password: "{{ sudo_password | password_hash('sha512') }}"
         update_password: on_create
         expires: -1
         append: yes
