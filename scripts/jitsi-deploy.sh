@@ -8,6 +8,7 @@ fi
 ##Linode/SSH security settings
 #<UDF name="user_name" label="The limited sudo user to be created for the Linode: *All lowercase*">
 #<UDF name="disable_root" label="Disable root access over SSH?" oneOf="Yes,No" default="No">
+#<UDF name="add_ssh_keys" label="Add Account SSH Keys to All Nodes?" oneof="yes,no"  />
 
 ## Domain Settings
 #<UDF name="token_password" label="Your Linode API token. This is needed to create your server's DNS records" default="">
@@ -85,7 +86,7 @@ function setup {
   # install dependencies
   export DEBIAN_FRONTEND=noninteractive
   apt-get update && apt-get upgrade -y
-  apt-get install -y jq git python3 python3-pip python3-dev build-essential firewalld
+  apt-get install -y jq git python3 python3-pip python3-dev build-essential
   # add private IP address
   rename_provisioner
   configure_privateip  
@@ -107,6 +108,12 @@ function setup {
   # copy run script to path
   cp scripts/run.sh /usr/local/bin/run
   chmod +x /usr/local/bin/run
+  #sudo username
+  if [[ -n ${USER_NAME} ]]; then
+    echo "username: ${USER_NAME}" >> /tmp/linode/group_vars/jitsi/vars
+  else 
+    echo "No username entered"
+  fi
 }
 # main
 setup

@@ -1,0 +1,34 @@
+---
+# set app specific ufw rules 
+- name: Allow all access to tcp port 22
+  community.general.ufw:
+    rule: allow
+    port: '22'
+    proto: tcp
+
+# allow certbot
+- name: Allow all access to tcp port 80
+  community.general.ufw:
+    rule: allow
+    port: '80'
+    proto: tcp
+
+- name: Allow all access to tcp port 80
+  community.general.ufw:
+    rule: allow
+    port: '443'
+    proto: tcp    
+
+# media traffic
+- name: Allow all access to tcp port 10000 
+  community.general.ufw:
+    rule: allow
+    port: '10000'
+    proto: udp
+    
+# video bridge
+- name: Allow all access to tcp port 9090
+  community.general.ufw:
+    rule: allow
+    port: '9090'
+    proto: tcp
