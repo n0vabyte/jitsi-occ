@@ -79,6 +79,7 @@ function ansible:build {
   region: ${LINODE_PARAMS[1]}
   image: ${LINODE_PARAMS[2]}
   linode_tags: ${TAGS}
+  username: ${USER_NAME}
   uuid: ${UUID}
   soa_email_address: ${SOA_EMAIL_ADDRESS}
   cluster_size: ${CLUSTER_SIZE}

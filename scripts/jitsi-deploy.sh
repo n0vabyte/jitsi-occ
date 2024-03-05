@@ -108,12 +108,6 @@ function setup {
   # copy run script to path
   cp scripts/run.sh /usr/local/bin/run
   chmod +x /usr/local/bin/run
-  #sudo username
-  if [[ -n ${USER_NAME} ]]; then
-    echo "username: ${USER_NAME}" >> /tmp/linode/group_vars/jitsi/vars
-  else 
-    echo "No username entered"
-  fi
 }
 # main
 setup
