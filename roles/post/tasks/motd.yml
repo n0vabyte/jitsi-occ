@@ -12,6 +12,6 @@
     content: |
       sudo username: {{ username }}
       sudo password: {{ password }}
-    loop:
-      - {user: "/root"}
-      - {user: "/home/{{ username }}"}
+  loop:
+    - {user: "/root"}
+    - {user: "/home/{{ username }}"}
