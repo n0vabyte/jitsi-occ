@@ -25,10 +25,14 @@
     rule: allow
     port: '10000'
     proto: udp
-    
+
 # video bridge
 - name: Allow all access to tcp port 9090
   community.general.ufw:
     rule: allow
     port: '9090'
     proto: tcp
+
+- name: Enable ufw
+  community.general.ufw:
+    state: enabled
