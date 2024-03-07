@@ -36,3 +36,5 @@
 - name: Enable ufw
   community.general.ufw:
     state: enabled
+  async: 60
+  poll: 0
