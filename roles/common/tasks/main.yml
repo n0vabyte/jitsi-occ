@@ -56,3 +56,17 @@
 
 - name: apply ufw rules
   import_tasks: ufw_rules.yml
+
+- name: set _domain variable
+  import_tasks: domain.yml
+  run_once: true
+  delegate_to: "localhost"
+
+# dns creation
+- name: create dns A record
+  import_task: create_dns_record.yml
+  run_once: true
+  delegate_to: "localhost"  
+  when:
+    - token_password is defined
+    - default_dns is not defined

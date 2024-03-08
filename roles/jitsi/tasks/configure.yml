@@ -4,7 +4,8 @@
 - name: set jvb conf var
   set_fact:
     jvb_props: '/etc/jitsi/videobridge/sip-communicator.properties'
-    nginx_conf: "/etc/nginx/sites-enabled/{{ domain }}.conf"
+    #nginx_conf: "/etc/nginx/sites-enabled/{{ domain }}.conf"
+    nginx_conf: "/etc/nginx/sites-enabled/{{ _domain }}.conf"
     jvb_conf: '/etc/jitsi/videobridge/jvb.conf'
     jicofo_conf: '/etc/jitsi/jicofo/jicofo.conf'
     jvb_count: '{{ cluster_size - jitsi_count }}'

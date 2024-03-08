@@ -87,6 +87,20 @@ function ansible:build {
   cluster_size: ${CLUSTER_SIZE}
   jitsi_count: 1
 EOF
+
+# domain vars
+  if [[ -n ${DOMAIN} ]]; then
+    echo "domain: ${DOMAIN}" >> ${VARS_PATH}
+  else
+    echo "default_dns: $(hostname -I | awk '{print $1}'| \
+      tr '.' '-' | awk {'print $1 ".ip.linodeusercontent.com"'})" >> ${VARS_PATH}
+  fi
+
+  if [[ -n ${SUBDOMAIN} ]]; then
+    echo "subdomain: ${SUBDOMAIN}" >> ${VARS_PATH}
+  else 
+    echo "subdomain: www" >> ${VARS_PATH}
+  fi
 }
 
 function ansible:deploy {
