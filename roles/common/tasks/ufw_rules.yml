@@ -50,6 +50,7 @@
   loop_control:
     index_var: count
 
+# async to avoid connection disruption
 - name: Enable ufw
   community.general.ufw:
     state: enabled

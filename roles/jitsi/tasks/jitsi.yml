@@ -5,7 +5,6 @@
   debconf:
     name: jitsi-videobridge
     question: jitsi-videobridge/jvb-hostname
-    #value: "{{ domain }}"
     value: "{{ _domain }}"
     vtype: string
 
@@ -39,5 +38,3 @@
   run_once: true  
   delegate_to: "{{ item }}"
   loop: "{{ groups['jvb_servers'] }}"
-
-# gotta stop jvb on meet instances

@@ -4,7 +4,6 @@
 - name: set jvb conf var
   set_fact:
     jvb_props: '/etc/jitsi/videobridge/sip-communicator.properties'
-    #nginx_conf: "/etc/nginx/sites-enabled/{{ domain }}.conf"
     nginx_conf: "/etc/nginx/sites-enabled/{{ _domain }}.conf"
     jvb_conf: '/etc/jitsi/videobridge/jvb.conf'
     jicofo_conf: '/etc/jitsi/jicofo/jicofo.conf'
@@ -15,9 +14,9 @@
 - name: stopping jitsi-videobridge2 service
   systemd:
     name: jitsi-videobridge2
-    state: stopped
+    state: stopped    
 
-# slurp jvb conf from jitsi instance
+# slurp jvb conf from jitsi instance and
 # copy conf to jvb instances. 
 
 - name: getting jvb config from jitsi instance
@@ -253,7 +252,7 @@
 
 # restart services
 
-- name: restart nginx service on jitsi meet servers
+- name: restart nginx service on jitsi meet server
   systemd:
     name: nginx
     state: restarted
@@ -261,7 +260,7 @@
   delegate_to: "{{ item }}"
   loop: "{{ groups['jitsi_servers'] }}"
 
-- name: restart prosody service on jitsi meet servers
+- name: restart prosody service on jitsi meet server
   systemd:
     name: prosody
     state: restarted
@@ -269,7 +268,7 @@
   delegate_to: "{{ item }}"
   loop: "{{ groups['jitsi_servers'] }}"
 
-- name: restart jicofo service on jitsi meet servers
+- name: restart jicofo service on jitsi meet server
   systemd:
     name: jicofo
     state: restarted
@@ -284,3 +283,11 @@
   run_once: true
   delegate_to: "{{ item }}"
   loop: "{{ groups['jvb_servers'] }}"
+
+- name: disable jitsi-videobridge2 service on jitsi server
+  systemd:
+    name: jitsi-videobridge2
+    enabled: false
+  run_once: true
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['jitsi_servers'] }}"

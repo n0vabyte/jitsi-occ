@@ -6,14 +6,6 @@
   run_once: true
   delegate_to: "localhost"
 
-#- name: writing sudo user password to vars
-#  lineinfile:
-#    insertafter: EOF
-#    path: group_vars/linode/vars
-#    line: | 
-#      password: {{ password }}
-
-# sudo user and pass in run script
 
 - name: set sudo user
   user:
