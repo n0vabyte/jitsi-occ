@@ -64,7 +64,7 @@
 
 # dns creation
 - name: create dns A record
-  import_task: create_dns_record.yml
+  import_tasks: create_dns_record.yml
   run_once: true
   delegate_to: "localhost"  
   when:
