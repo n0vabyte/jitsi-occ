@@ -11,7 +11,8 @@
   ansible.builtin.debug:
     var: ip_address
 
-# loop through domains the provided API token has grants to. Creating an A record without a zone, or creating a duplicate zone will fail the play.
+# loop through domains the provided API token has grants to. Creating an A record without a zone, 
+# or creating a duplicate zone will fail the play.
 - name: check existence of domain zone
   block:
     - name: lookup domain info

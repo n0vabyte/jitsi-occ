@@ -6,7 +6,6 @@
   run_once: true
   delegate_to: "localhost"
 
-
 - name: set sudo user
   user:
         name: "{{ username }}"

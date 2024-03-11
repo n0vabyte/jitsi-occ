@@ -1,4 +1,5 @@
 ---
+# roles/common/tasks/domain.yml
 - name: set dns fact for subdomain
   set_fact:
     _domain: '{{ subdomain }}.{{ domain }}'
