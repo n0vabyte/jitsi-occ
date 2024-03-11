@@ -2,11 +2,16 @@
 
 Jitsi is a free, open source video conferencing and communication platform. It provides a secure, stable, and free alternative to popular video conferencing services. Use built-in features to limit meeting access with passwords or stream on YouTube so anyone can attend. 
 
+Our marketplace app allows you to create a Jitsi cluster that decouples Jitsi's video brige component to create a more robust video conference solution.
+
 ## Software Included
 
 | Software  | Version   | Description   |
 | :---      | :----     | :---          |
-| Jitsi    | latest    | Video Conferencing Bridge |
+| Jitsi    | latest    | Jitsi web frontend |
+| JVB      | latest    | Video Conferencing Bridge |
+| Jicofo   | latest    | Manages media sessions and loadbalances participants to JVB |
+
 
 **Supported Distributions:**
 
@@ -34,6 +39,11 @@ SHELL:
 export TOKEN="YOUR API TOKEN"
 export ROOT_PASS="aComplexP@ssword"
 export SOA_EMAIL_ADDRESS="email@domain.com"
+export CLUSTER_SIZE="4"
+export USER_NAME="admin"
+export SSHKYES="yes"
+export TOKEN_PASSWORD="LINODE-API-TOKEN"
+
 
 curl -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${TOKEN}" \
@@ -45,6 +55,10 @@ curl -H "Content-Type: application/json" \
       "stackscript_id": 00000000000,
       "stackscript_data": {
         "disable_root": "no/yes",
+        "cluster_size": "${CLUSTER_SIZE}",
+        "user_name": "${USER_NAME}",
+        "add_ssh_keys": "${SSHKEYS}",
+        "token_password": "${TOKEN_PASSWORD}"
         "soa_email_address": "${SOA_EMAIL_ADDRESS}"
       },
       "authorized_users": [
@@ -56,7 +70,7 @@ curl -H "Content-Type: application/json" \
       "type": "g6-standard-2",
       "region": "us-east",
       "group": "Linode-Group"
-    }' \
+    }'\
 https://api.linode.com/v4/linode/instances
 ```
 
@@ -65,6 +79,10 @@ CLI:
 export TOKEN="YOUR API TOKEN"
 export ROOT_PASS="aComplexP@ssword"
 export SOA_EMAIL_ADDRESS="email@domain.com"
+export CLUSTER_SIZE="4"
+export USER_NAME="admin"
+export SSHKYES="yes"
+export TOKEN_PASSWORD="LINODE-API-TOKEN"
 
 linode-cli linodes create \
   --label linode123 \
