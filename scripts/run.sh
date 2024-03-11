@@ -60,12 +60,6 @@ function lint {
   flake8
 }
 
-# We don't need a verify right this sec.
-#function verify {
-#    ansible-playbook -i hosts verify.yml
-#    destroy
-#}
-
 # production
 function ansible:build {
   secrets
@@ -113,7 +107,6 @@ function test:deploy {
   export DATE="$(date '+%Y-%m-%d-%H%M%S')"
   ansible-playbook provision.yml --extra-vars "ssh_keys=${HOME}/.ssh/id_ansible_ed25519.pub instance_prefix=${DISTRO}-${DATE} image=linode/${DISTRO}"
   ansible-playbook -i hosts site.yml --extra-vars "root_password=${ROOT_PASS}  add_keys_prompt=yes"
-  #verify
 }
 
 # main

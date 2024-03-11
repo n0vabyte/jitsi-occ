@@ -11,7 +11,7 @@ fi
 #<UDF name="add_ssh_keys" label="Add Account SSH Keys to All Nodes?" oneof="yes,no"  />
 
 ## Domain Settings
-#<UDF name="token_password" label="Your Linode API token. This is needed to create your server's DNS records" default="">
+#<UDF name="token_password" label="Your Linode API token. This is needed to create your Jitis cluster" default="">
 #<UDF name="subdomain" label="Subdomain" example="The subdomain for the DNS record: www (Requires Domain)" default="">
 #<UDF name="domain" label="Domain" example="The domain for the DNS record: example.com (Requires API token)" default="">
 
